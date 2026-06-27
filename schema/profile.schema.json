@@ -1,0 +1,38 @@
+{
+    "name": "Profile",
+    "table": "profile",
+    "description": "profile users",
+    "timestamps": true,
+    "soft_deletes": false,
+    "fields": [
+        {
+            "name": "id",
+            "type": "id",
+            "label": "ID",
+            "required": true,
+            "auto_increment": true
+        },
+        {
+            "name": "name",
+            "type": "text",
+            "label": "name",
+            "required": false,
+            "unique": false,
+            "default": ""
+        },
+        {
+            "name": "last_name",
+            "type": "text",
+            "label": "last name",
+            "required": false,
+            "unique": false,
+            "default": ""
+        }
+    ],
+    "relations": [],
+    "routes": {
+        "api": false,
+        "admin": true
+    },
+    "generated_at": "2026-06-27T13:57:18+00:00"
+}

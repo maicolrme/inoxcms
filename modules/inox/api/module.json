@@ -1,0 +1,7 @@
+{
+    "name": "api",
+    "vendor": "inox",
+    "description": "RESTful API — token management and documentation",
+    "version": "1.0.0",
+    "provider": "Inox\\Api\\Providers\\ModuleServiceProvider"
+}

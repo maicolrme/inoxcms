@@ -1,0 +1,4 @@
+/* INOX Default Theme — minimal overrides */
+html { scroll-behavior: smooth; }
+.prose a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.prose img { border-radius: 0.5rem; }

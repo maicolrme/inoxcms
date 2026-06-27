@@ -1,0 +1,7 @@
+{
+    "private": true,
+    "scripts": {
+        "build": "echo 'Vue islands build not configured yet'",
+        "dev": "echo 'Vue islands dev not configured yet'"
+    }
+}

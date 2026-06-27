@@ -1,0 +1,30 @@
+{
+    "name": "test2",
+    "table": "test2",
+    "description": "",
+    "timestamps": true,
+    "soft_deletes": false,
+    "fields": [
+        {
+            "name": "id",
+            "type": "id",
+            "label": "ID",
+            "required": true,
+            "auto_increment": true
+        },
+        {
+            "name": "name",
+            "type": "text",
+            "label": "name",
+            "required": false,
+            "unique": false,
+            "default": ""
+        }
+    ],
+    "relations": [],
+    "generated_at": "2026-06-27T13:23:39+00:00",
+    "routes": {
+        "api": true,
+        "admin": true
+    }
+}
