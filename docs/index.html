@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InoxCMS — Documentation</title>
+  <meta name="description" content="InoxCMS — The modern PHP CMS that doesn't rust. Documentation and reference.">
+  <meta property="og:title" content="InoxCMS Documentation">
+  <meta property="og:description" content="The modern PHP CMS that doesn't rust.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://maicolrme.github.io/inoxcms/">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>⚡</text></svg>">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+  <script src="https://unpkg.com/fuse.js@7/dist/fuse.basic.min.js"></script>
+  <style>
+    :root { --color-accent: #2563eb; --color-accent-hover: #1d4ed8; }
+    .dark { --color-accent: #60a5fa; --color-accent-hover: #93c5fd; }
+    html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .docs-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb; }
+    .dark .docs-content h2 { border-color: #374151; }
+    .docs-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    .docs-content p { margin-bottom: 1rem; line-height: 1.75; }
+    .docs-content ul, .docs-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .docs-content li { margin-bottom: 0.375rem; line-height: 1.75; }
+    .docs-content a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .docs-content a:hover { color: var(--color-accent-hover); }
+    .docs-content pre { position: relative; border-radius: 0.5rem; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; line-height: 1.5; }
+    .docs-content pre code { display: block; padding: 1rem 1.25rem; overflow-x: auto; }
+    .docs-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 0.875rem; }
+    .docs-content th, .docs-content td { border: 1px solid #e5e7eb; padding: 0.625rem 0.75rem; text-align: left; }
+    .dark .docs-content th, .dark .docs-content td { border-color: #374151; }
+    .docs-content th { font-weight: 600; background: #f9fafb; }
+    .dark .docs-content th { background: #1f2937; }
+    .docs-content blockquote { border-left: 3px solid var(--color-accent); padding: 0.75rem 1rem; margin-bottom: 1rem; background: #f9fafb; border-radius: 0 0.375rem 0.375rem 0; }
+    .dark .docs-content blockquote { background: #1f2937; }
+    .docs-content blockquote p { margin-bottom: 0; }
+    .docs-content hr { margin: 2rem 0; border-color: #e5e7eb; }
+    .dark .docs-content hr { border-color: #374151; }
+    .docs-content strong { font-weight: 600; }
+    .docs-content img { max-width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; border-radius: 0.25rem; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+    pre:hover .copy-btn { opacity: 1; }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); color: #e5e7eb; }
+    .sidebar-link { display: block; padding: 0.375rem 0.75rem; font-size: 0.875rem; border-radius: 0.375rem; transition: all 0.15s; }
+    .sidebar-link:hover { background: #f3f4f6; }
+    .dark .sidebar-link:hover { background: #374151; }
+    .sidebar-link.active { color: var(--color-accent); font-weight: 600; background: #eff6ff; }
+    .dark .sidebar-link.active { background: #1e3a5f; }
+    .toc-link { display: block; padding: 0.25rem 0.5rem; font-size: 0.8125rem; color: #6b7280; border-left: 2px solid transparent; transition: all 0.15s; }
+    .dark .toc-link { color: #9ca3af; }
+    .toc-link:hover { color: var(--color-accent); border-color: var(--color-accent); }
+    .toc-link.active { color: var(--color-accent); border-color: var(--color-accent); font-weight: 500; }
+    .dark .toc-link.active { color: var(--color-accent-hover); }
+    .fade-slide-enter-active, .fade-slide-leave-active { transition: all 0.2s ease; }
+    .fade-slide-enter-from, .fade-slide-leave-to { opacity: 0; transform: translateY(-0.5rem); }
+    ::selection { background: #2563eb; color: white; }
+    .dark ::selection { background: #3b82f6; }
+    .search-highlight { background: #fef08a; padding: 0.125rem 0.25rem; border-radius: 0.125rem; }
+    .dark .search-highlight { background: #854d0e; color: #fef9c3; }
+    @media (max-width: 1023px) { .sidebar-overlay { display: none; } .sidebar-open .sidebar-overlay { display: block; } }
+  </style>
+</head>
+<body>
+<div id="app" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+  <header class="fixed top-0 inset-x-0 z-50 h-16 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 flex items-center" style="view-transition-name: header;">
+    <div class="max-w-screen-3xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between h-full">
+      <div class="flex items-center gap-3">
+        <button @click="sidebarOpen=!sidebarOpen" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Toggle sidebar">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path v-if="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/><path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <a href="#/" class="flex items-center gap-2 font-bold text-lg no-underline text-gray-900 dark:text-white">
+          <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#2563eb"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="system-ui">I</text></svg>
+          <span>InoxCMS</span>
+        </a>
+      </div>
+      <div class="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-8">
+        <div class="relative w-full">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input v-model="searchQuery" @focus="searchOpen=true" @keydown.escape="searchOpen=false; searchQuery=''" placeholder="Search docs..." class="w-full pl-9 pr-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <div v-if="searchOpen && searchResults.length>0" class="absolute top-full mt-1 inset-x-0 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-80 overflow-y-auto z-50">
+            <div v-for="r in searchResults" :key="r.ref" @mousedown="goToSearch(r)" class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-sm border-b border-gray-100 dark:border-gray-800 last:border-0">
+              <div class="font-medium">{{ r.title }}</div>
+              <div v-if="r.section" class="text-xs text-gray-500 mt-0.5">{{ r.section }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button @click="toggleDarkMode" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" :title="isDark ? 'Light mode' : 'Dark mode'">
+          <svg v-if="!isDark" class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <svg v-else class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </button>
+        <a href="https://github.com/maicolrme/inoxcms" target="_blank" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 no-underline text-gray-700 dark:text-gray-300">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-screen-3xl mx-auto pt-16" style="view-transition-name: main;">
+    <div class="flex">
+      <aside :class="['fixed lg:sticky top-16 z-40 h-[calc(100vh-4rem)] w-64 lg:w-56 xl:w-64 overflow-y-auto border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 transition-transform duration-200 lg:translate-x-0', sidebarOpen ? 'translate-x-0' : '-translate-x-full']">
+        <div class="p-4 pb-8">
+          <div class="md:hidden mb-3">
+            <input v-model="searchQuery" @focus="searchOpen=true" @keydown.escape="searchOpen=false; searchQuery=''" placeholder="Search..." class="w-full px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <nav v-for="group in sidebarGroups" :key="group.label" class="mb-4">
+            <button @click="group.collapsed=!group.collapsed" class="flex items-center justify-between w-full px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+              {{ group.label }}
+              <svg :class="['w-3 h-3 transition-transform', group.collapsed ? '' : 'rotate-90']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <div v-if="!group.collapsed" class="mt-1 space-y-0.5">
+              <router-link v-for="page in group.pages" :key="page.path" :to="page.path" class="sidebar-link" active-class="active" @click="sidebarOpen=false">
+                {{ page.label }}
+              </router-link>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
+        <div v-if="loading" class="flex items-center justify-center py-20">
+          <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <div v-else class="docs-content max-w-3xl" v-html="currentContent"></div>
+      </main>
+
+      <aside class="hidden xl:block w-56 shrink-0">
+        <div class="sticky top-20 overflow-y-auto max-h-[calc(100vh-6rem)] px-4 py-8 text-sm">
+          <div class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">On this page</div>
+          <div v-if="tocItems.length === 0" class="text-xs text-gray-400 dark:text-gray-500">No sections</div>
+          <a v-for="item in tocItems" :key="item.id" :href="'#'+item.id" :class="['toc-link block', item.level===3 ? 'pl-4' : '', activeToc===item.id ? 'active' : '']" @click.prevent="scrollTo(item.id)">
+            {{ item.text }}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer class="border-t border-gray-200 dark:border-gray-800 py-8 mt-8">
+    <div class="max-w-screen-3xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
+      <div>&copy; {{ new Date().getFullYear() }} InoxCMS. MIT License.</div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/maicolrme/inoxcms" class="hover:text-gray-700 dark:hover:text-gray-200 no-underline">GitHub</a>
+        <span>Version 0.1.0-alpha</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+const PAGES = {
+  home: {
+    title: 'InoxCMS',
+    content: `
+      <div class="mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">The modern PHP CMS<br>that doesn't rust.</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">InoxCMS is a Laravel-based content management system with a modular architecture, marketplace for modules and themes, visual schema builder, and a clean admin panel — all abstracted from framework internals.</p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <a href="#/installation" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white" style="background:#2563eb;hover:background:#1d4ed8;">Get Started</a>
+          <a href="#/modules" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 no-underline text-gray-700 dark:text-gray-300">Explore Modules</a>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#eff6ff;color:#2563eb;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg></div>
+          <h3 class="font-semibold mb-1">Modular Architecture</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Install modules from the marketplace. Each module is self-contained with its own providers, views, migrations, and Livewire components.</p>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#fdf2f8;color:#db2777;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg></div>
+          <h3 class="font-semibold mb-1">Theme System</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Switch themes with a dropdown. Themes register templates and settings schema. Create and distribute your own via the marketplace.</p>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#f0fdf4;color:#16a34a;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+          <h3 class="font-semibold mb-1">Visual Schema Builder</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Design data models visually, generate migrations, Eloquent models, policies, and REST APIs automatically — no coding required.</p>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#fef3c7;color:#b45309;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg></div>
+          <h3 class="font-semibold mb-1">API Route Manager</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Toggle API routes on/off from an admin interface. Visual route manager with per-method enable/disable controls.</p>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#f3e8ff;color:#7c3aed;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg></div>
+          <h3 class="font-semibold mb-1">Database Settings</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">All settings stored in the database, not .env. Modules and themes register their own settings schema. Clean purge on uninstall.</p>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#fce7f3;color:#be185d;"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
+          <h3 class="font-semibold mb-1">Developer Friendly</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Based on Laravel 13 with Livewire 4. Full artisan CLI, hook system, service providers, and a clean public API for extending everything.</p>
+        </div>
+      </div>
+      <h2 id="quick-start" class="scroll-mt-20">Quick Start</h2>
+      <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 mb-6">
+        <div class="font-semibold mb-3">Requirements</div>
+        <ul>
+          <li>PHP 8.3 or higher</li>
+          <li>Composer 2.x</li>
+          <li>SQLite (default) or MySQL 8.0+</li>
+          <li>Node.js & npm (optional, for theme asset building)</li>
+        </ul>
+      </div>
+      <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 mb-6">
+        <div class="font-semibold mb-3">Installation</div>
+        <pre><code>git clone https://github.com/maicolrme/inoxcms.git
+cd inoxcms
+composer install --working-dir=core
+php artisan inox:install</code></pre>
+      </div>
+      <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 mb-6">
+        <div class="font-semibold mb-3">Development Server</div>
+        <pre><code>php artisan serve
+
+# Or use the custom serve command on a different port:
+php artisan inox:serve --port=8080</code></pre>
+      </div>
+    `
+  },
+  installation: {
+    title: 'Installation',
+    content: `
+      <h1>Installation</h1>
+      <h2 id="requirements">Requirements</h2>
+      <p>InoxCMS requires the following software installed on your system:</p>
+      <ul>
+        <li><strong>PHP</strong> 8.3 or higher (with extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML)</li>
+        <li><strong>Composer</strong> 2.x</li>
+        <li><strong>Database</strong> — SQLite (default, no setup required) or MySQL 8.0+ / MariaDB 10.3+</li>
+        <li><strong>Git</strong> — for cloning the repository and managing submodules</li>
+      </ul>
+      <h2 id="installation-steps">Installation Steps</h2>
+      <h3>1. Clone the Repository</h3>
+      <pre><code>git clone https://github.com/maicolrme/inoxcms.git
+cd inoxcms</code></pre>
+      <h3>2. Install PHP Dependencies</h3>
+      <p>Since the core Laravel framework lives inside <code>core/</code>, run Composer from there:</p>
+      <pre><code>cd core
+composer install
+cd ..</code></pre>
+      <h3>3. Initialize Environment</h3>
+      <pre><code>cp .env.example .env
+php artisan key:generate</code></pre>
+      <h3>4. Run the Installer</h3>
+      <p>The interactive installer guides you through project type, database setup, features, and admin account creation:</p>
+      <pre><code>php artisan inox:install</code></pre>
+      <p>Or use the quick mode with defaults (SQLite, website type, no extra features):</p>
+      <pre><code>php artisan inox:install --quick</code></pre>
+      <p>The installer will:</p>
+      <ul>
+        <li>Ask for project type (website, e-commerce, or API)</li>
+        <li>Configure database connection (SQLite or MySQL)</li>
+        <li>Run migrations</li>
+        <li>Prompt for optional features (WebSockets, AI)</li>
+        <li>Create the admin user account</li>
+        <li>Mark installation as complete</li>
+      </ul>
+      <h3>5. Update Submodules</h3>
+      <p>The modules and themes directories are managed as git submodules:</p>
+      <pre><code>git submodule init
+git submodule update</code></pre>
+      <h3>6. Start the Development Server</h3>
+      <pre><code>php artisan serve</code></pre>
+      <p>Visit <a href="http://127.0.0.1:8000/admin">http://127.0.0.1:8000/admin</a> to access the admin panel and log in with the credentials you created during installation.</p>
+      <h2 id="manual-installation">Manual Installation</h2>
+      <p>If you prefer to configure everything manually instead of using the installer:</p>
+      <pre><code>php artisan migrate
+php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder</code></pre>
+      <p>Then set the installer completion flag in <code>.env</code>:</p>
+      <pre><code>INOX_INSTALL_COMPLETED=true</code></pre>
+    `
+  },
+  configuration: {
+    title: 'Configuration',
+    content: `
+      <h1>Configuration</h1>
+      <p>InoxCMS uses a two-layer configuration system: environment variables (<code>.env</code>) for server-specific settings, and database settings for application-level configuration.</p>
+      <h2 id="environment">Environment File</h2>
+      <p>The <code>.env</code> file at the project root stores environment-specific configuration. Key variables:</p>
+      <table>
+        <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>APP_NAME</code></td><td>MyBlog</td><td>Application name displayed in admin</td></tr>
+          <tr><td><code>APP_URL</code></td><td>http://127.0.0.1:8000</td><td>Base URL for links and assets</td></tr>
+          <tr><td><code>APP_DEBUG</code></td><td>true</td><td>Enable detailed error pages</td></tr>
+          <tr><td><code>DB_CONNECTION</code></td><td>sqlite</td><td>Database driver (sqlite or mysql)</td></tr>
+          <tr><td><code>INOX_PROJECT_TYPE</code></td><td>website</td><td>Project type: website, ecommerce, api</td></tr>
+          <tr><td><code>INOX_FEATURE_REALTIME</code></td><td>false</td><td>Enable WebSocket support</td></tr>
+          <tr><td><code>INOX_FEATURE_AI</code></td><td>false</td><td>Enable AI features</td></tr>
+          <tr><td><code>STORAGE_DISK</code></td><td>local</td><td>Media storage driver (local, s3, r2)</td></tr>
+        </tbody>
+      </table>
+      <h2 id="inox-config">InoxCMS Configuration</h2>
+      <p>The <code>core/config/inox.php</code> file contains InoxCMS-specific settings, including module paths, marketplace URLs, cache configuration, and feature flags. Most values can be overridden via <code>.env</code>.</p>
+      <pre><code>return [
+    'name' => env('INOX_NAME', 'INOX'),
+    'version' => '0.1.0',
+    'modules' => [
+        'path' => dirname(__DIR__, 2) . '/modules',
+        'active' => ['storage', 'api', 'schema-studio'],
+    ],
+    'themes' => [
+        'path' => dirname(__DIR__, 2) . '/themes',
+        'active' => 'inox/simple',
+    ],
+    'marketplace' => [
+        'modules_url' => 'https://raw.githubusercontent.com/maicolrme/inoxcms-modules/main/registry.json',
+        'themes_url'  => 'https://raw.githubusercontent.com/maicolrme/inoxcms-themes/main/registry.json',
+    ],
+];</code></pre>
+      <h2 id="database-settings">Database Settings</h2>
+      <p>Application settings — site name, description, theme options, cache preferences — are stored in the <code>inox_settings</code> table. The <code>SettingRegistry</code> manages these settings and provides autoloading into the config cache.</p>
+      <pre><code>// Get a setting value
+$value = setting('site_name', 'My Site');
+
+// Set a value programmatically
+app('setting.registry')->set('site_name', 'New Name', 'core');</code></pre>
+      <h2 id="helper">The <code>cms_path()</code> Helper</h2>
+      <p>InoxCMS abstracts Laravel internals into the <code>core/</code> directory. The <code>cms_path()</code> helper returns the absolute path to the project root — useful for referencing modules, themes, and the <code>.env</code> file from within the core.</p>
+      <pre><code>// Get the project root path
+$root = cms_path();           // /home/user/projects/inoxcms
+
+// Get a specific path
+$env  = cms_path('.env');     // /home/user/projects/inoxcms/.env
+$mods = cms_path('modules');  // /home/user/projects/inoxcms/modules</code></pre>
+    `
+  },
+  'directory-structure': {
+    title: 'Directory Structure',
+    content: `
+      <h1>Directory Structure</h1>
+      <p>InoxCMS abstracts the Laravel framework internals into a <code>core/</code> directory, keeping the project root clean and CMS-focused.</p>
+      <pre><code>inoxcms/
+├── core/                  # Laravel framework & application internals
+│   ├── app/               # Application code (Models, Controllers, Livewire, Core)
+│   ├── bootstrap/         # Framework bootstrap (app.php)
+│   ├── config/            # Configuration files
+│   ├── database/          # Migrations & seeders
+│   ├── public/            # Web entry point & assets
+│   ├── resources/         # Views, language files
+│   ├── routes/            # Web, API, console routes
+│   ├── storage/           # Logs, cache, compiled views
+│   ├── tests/             # PHPUnit tests
+│   ├── vendor/            # Composer dependencies
+│   ├── artisan            # Laravel CLI (legacy entry)
+│   └── composer.json      # Composer manifest
+├── modules/               # Marketplace modules (git submodule)
+│   ├── registry.json
+│   └── inox/
+│       ├── seo/
+│       ├── api/
+│       ├── storage/
+│       └── schema-studio/
+├── themes/                # Themes (git submodule)
+│   ├── registry.json
+│   └── inox/
+│       ├── default/
+│       └── simple/
+├── vendor/                # (empty — autoloading goes through core/)
+├── schema/                # Visual schema output files
+├── index.php              # Web entry point
+├── artisan                # CLI entry point
+├── .env                   # Environment configuration (root)
+├── composer.json          # Root composer manifest
+├── .gitmodules            # Submodule configuration
+└── docs/                  # Documentation (this site)</code></pre>
+      <h2 id="core-structure">The <code>core/</code> Directory</h2>
+      <p>The <code>core/</code> directory contains all Laravel internals, abstracted from the project root. It includes:</p>
+      <ul>
+        <li><strong>app/Core/</strong> — InoxCMS engine classes (ModuleEngine, ThemeEngine, SettingRegistry, TemplateRegistry, HookSystem, Installer)</li>
+        <li><strong>app/Livewire/</strong> — Livewire admin components (Posts, Pages, Categories, Tags, Settings, Modules, Themes, Roles)</li>
+        <li><strong>app/Models/</strong> — Eloquent models (Post, Category, Tag, Setting, User, Role, Permission)</li>
+        <li><strong>app/Providers/</strong> — Service providers that bootstrap modules, themes, settings, and permissions</li>
+        <li><strong>app/Http/Controllers/</strong> — Web and API controllers (Blog, Page, Admin, Installer, Login)</li>
+        <li><strong>app/Console/Commands/</strong> — Artisan commands for installation, theme scaffolding, and update checks</li>
+      </ul>
+      <h2 id="entry-points">Entry Points</h2>
+      <p>The project root has two entry points that bootstrap Laravel from <code>core/</code>:</p>
+      <ul>
+        <li><strong>index.php</strong> — Web entry point. Loads <code>core/vendor/autoload.php</code> and <code>core/bootstrap/app.php</code>, then handles the HTTP request.</li>
+        <li><strong>artisan</strong> — CLI entry point. The same bootstrap process for console commands.</li>
+      </ul>
+      <pre><code>// index.php — simplified
+require __DIR__ . '/core/vendor/autoload.php';
+$app = require_once __DIR__ . '/core/bootstrap/app.php';
+$app->handleRequest(Request::capture());</code></pre>
+      <h2 id="module-theme-structure">Module & Theme Structure</h2>
+      <p>Modules and themes follow a vendor/name convention:</p>
+      <pre><code>modules/inox/seo/
+├── module.json            # Manifest (name, version, provider class, permissions)
+├── config/
+├── database/migrations/
+├── resources/views/
+├── routes/
+└── src/
+    ├── Providers/ModuleServiceProvider.php
+    ├── Livewire/
+    ├── Models/
+    └── Http/
+
+themes/inox/simple/
+├── theme.json             # Manifest (settings schema, template list)
+├── templates/             # Blade templates (layout, home, page, post, etc.)
+└── assets/                # CSS, JS, images</code></pre>
+    `
+  },
+  modules: {
+    title: 'Module Engine',
+    content: `
+      <h1>Module Engine</h1>
+      <p>The Module Engine is the heart of InoxCMS's extensibility. It discovers, activates, and manages modules — self-contained packages that extend CMS functionality.</p>
+      <h2 id="how-it-works">How It Works</h2>
+      <p>Modules are stored in <code>modules/{vendor}/{name}/</code>. Each module has a <code>module.json</code> manifest and a ServiceProvider that bootstraps its functionality. The <code>ModuleEngine</code> class scans the module directory, reads manifests, and activates modules defined in the configuration.</p>
+      <pre><code>// Activate a module programmatically
+$engine = app('module.engine');
+$engine->activate('seo');</code></pre>
+      <h2 id="module-manifest">Module Manifest</h2>
+      <p>Every module must have a <code>module.json</code> file:</p>
+      <pre><code>{
+    "name": "seo",
+    "vendor": "inox",
+    "version": "1.0.0",
+    "description": "SEO tools — meta tags, sitemaps, Open Graph, analytics",
+    "requires": {
+        "inox": ">=0.1.0",
+        "php": ">=8.3"
+    },
+    "permissions": {
+        "database": ["read:posts", "write:post_meta"],
+        "events": ["content.saved", "content.deleted"],
+        "routes": ["/sitemap.xml", "/robots.txt"],
+        "hooks": ["head.meta", "admin.sidebar", "content.saving"]
+    },
+    "provider": "Inox\\\\Seo\\\\Providers\\\\ModuleServiceProvider"
+}</code></pre>
+      <h2 id="module-service-provider">Module Service Provider</h2>
+      <p>The ServiceProvider bootstraps the module — merging config, loading views, registering Livewire components, and hooking into the CMS:</p>
+      <pre><code>class ModuleServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        \$this->mergeConfigFrom(__DIR__.'/../../config/seo.php', 'seo');
+    }
+
+    public function boot(): void
+    {
+        \$this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        \$this->loadViewsFrom(__DIR__.'/../../resources/views', 'seo');
+        \$this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+
+        // Register Livewire components
+        Livewire::component('seo-settings', SeoSettings::class);
+
+        // Register hooks
+        Hook::filter('head.meta', [\$this, 'injectMeta']);
+        Hook::action('content.saved', [\$this, 'onContentSaved']);
+
+        // Register admin nav items
+        app('module.engine')->registerNav('seo', [
+            ['label' => 'SEO', 'route' => 'admin.seo.settings',
+             'active' => 'admin.seo.*'],
+        ]);
+    }
+}</code></pre>
+      <h2 id="available-modules">Available Modules</h2>
+      <h3>SEO Module (<code>inox/seo</code>)</h3>
+      <p>Adds meta tags management, sitemap generation (<code>/sitemap.xml</code>), robots.txt (<code>/robots.txt</code>), Open Graph tags, and analytics integration. Registers hooks on <code>head.meta</code> and <code>content.saved</code>.</p>
+      <h3>API Module (<code>inox/api</code>)</h3>
+      <p>RESTful API layer with Sanctum token authentication, visual route manager, API logging, and automatic documentation generation. See the <a href="#/api">API Module</a> page for details.</p>
+      <h3>Storage Module (<code>inox/storage</code>)</h3>
+      <p>Media library with upload, image preview, and multiple disk drivers (local, S3, R2). Provides a media manager UI and a RESTful API for file operations. See <a href="#/storage">Storage</a> for details.</p>
+      <h3>Schema Studio (<code>inox/schema-studio</code>)</h3>
+      <p>Visual schema builder — design data models, generate migrations, Eloquent models, policies, and CRUD APIs. See <a href="#/schema-studio">Schema Studio</a> for details.</p>
+      <h2 id="creating-a-module">Creating a Module</h2>
+      <p>Modules follow a standard structure. Create your module directory and files:</p>
+      <pre><code>modules/your-vendor/your-module/
+├── module.json
+├── config/
+├── database/migrations/
+├── resources/views/
+├── routes/
+└── src/
+    ├── Providers/
+    │   └── ModuleServiceProvider.php
+    ├── Livewire/
+    ├── Models/
+    └── Http/</code></pre>
+      <p>Use the hook system to integrate with the CMS, register Livewire components for the admin panel, and register nav items so users can access your module's UI.</p>
+      <h2 id="marketplace">Marketplace</h2>
+      <p>The Module Engine includes marketplace integration:</p>
+      <ul>
+        <li>Fetches registry from <code>raw.githubusercontent.com</code></li>
+        <li>Checks for updates against installed versions</li>
+        <li>Installs modules from URL or ZIP file</li>
+        <li>All operations available through the admin UI</li>
+      </ul>
+      <pre><code>// Fetch marketplace registry
+\$registry = \$engine->fetchRegistry();
+
+// Check for updates
+\$updates = \$engine->checkUpdates(\$registry);
+
+// Install from URL
+\$engine->installFromUrl('https://github.com/...');</code></pre>
+    `
+  },
+  themes: {
+    title: 'Theme Engine',
+    content: `
+      <h1>Theme Engine</h1>
+      <p>The Theme Engine manages the visual presentation layer. Themes are self-contained packages with Blade templates, configuration schemas, and assets.</p>
+      <h2 id="how-themes-work">How Themes Work</h2>
+      <p>Themes live in <code>themes/{vendor}/{name}/</code>. Each theme has a <code>theme.json</code> manifest declaring templates, settings, and assets. The active theme is set in <code>config/inox.php</code> and can be changed from the admin panel.</p>
+      <pre><code>// Get the active theme
+\$theme = app('theme.engine')->active();
+
+// Render a theme template
+\$engine->template('home', ['posts' => \$posts]);
+
+// Get a theme setting
+theme('primary_color', '#2563eb');</code></pre>
+      <h2 id="theme-manifest">Theme Manifest</h2>
+      <pre><code>{
+    "name": "simple",
+    "vendor": "inox",
+    "version": "1.0.0",
+    "description": "A minimal, clean blog-style theme with Tailwind CSS.",
+    "settings": [
+        { "key": "primary_color",    "type": "color",   "default": "#2563eb", "label": "Brand Color" },
+        { "key": "show_home_posts",  "type": "boolean", "default": true,      "label": "Show latest posts on homepage" },
+        { "key": "footer_text",      "type": "text",    "default": "",        "label": "Footer Note" }
+    ],
+    "templates": ["layout", "home", "page", "post", "archive", "search", "404"],
+    "assets": {
+        "css": ["assets/css/app.css"]
+    }
+}</code></pre>
+      <h2 id="template-registry">Template Registry</h2>
+      <p>The Template Registry scans <code>core/resources/views/pages/</code> (core templates) and the active theme's <code>templates/</code> directory for available page templates. Templates are parsed from Blade comments:</p>
+      <pre><code>{{-- name: Full Width --}}
+{{-- description: A full-width page layout without sidebar --}}
+
+@extends('theme::layout')
+@section('content')
+    &lt;div&gt;...&lt;/div&gt;
+@endsection</code></pre>
+      <p>Users can select a template when creating or editing pages via the admin panel.</p>
+      <h2 id="creating-a-theme">Creating a Theme</h2>
+      <p>Use the Artisan command to scaffold a new theme:</p>
+      <pre><code>php artisan inox:make-theme mytheme --vendor=mycompany --description="My awesome theme"</code></pre>
+      <p>This generates a complete theme structure with:</p>
+      <ul>
+        <li><code>theme.json</code> manifest with default settings</li>
+        <li>All required Blade templates (layout, home, page, post, archive, search, 404)</li>
+        <li>Tailwind CSS-based starter styling</li>
+        <li>Asset directory structure</li>
+      </ul>
+      <p>You can also manually create a theme:</p>
+      <pre><code>themes/mycompany/mytheme/
+├── theme.json
+├── templates/
+│   ├── layout.blade.php
+│   ├── home.blade.php
+│   ├── page.blade.php
+│   ├── post.blade.php
+│   ├── archive.blade.php
+│   ├── search.blade.php
+│   └── 404.blade.php
+└── assets/
+    └── css/
+        └── app.css</code></pre>
+      <h2 id="theme-settings">Theme Settings</h2>
+      <p>Themes declare their settings schema in <code>theme.json</code>. Supported types: <code>color</code>, <code>boolean</code>, <code>text</code>, <code>select</code>, <code>image</code>. Settings are automatically displayed in the admin panel and stored in the database via <code>SettingRegistry</code>.</p>
+      <pre><code>// In a Blade template
+\$color = theme('primary_color', '#2563eb');
+\$showPosts = theme('show_home_posts', true);</code></pre>
+      <h2 id="theme-marketplace">Theme Marketplace</h2>
+      <p>Themes can be distributed through the marketplace, just like modules. The marketplace registry is fetched from <code>raw.githubusercontent.com</code>, and themes can be installed directly from the admin panel.</p>
+    `
+  },
+  api: {
+    title: 'API Module',
+    content: `
+      <h1>API Module</h1>
+      <p>The API module provides a RESTful API layer with token-based authentication, visual route management, request logging, and dynamic CRUD for generated models.</p>
+      <h2 id="installation-configuration">Installation & Configuration</h2>
+      <p>The API module is activated by default. Configure it via the <code>.env</code> file:</p>
+      <pre><code>API_AUTH_TYPE=sanctum   # Authentication method (sanctum|none)
+API_RATE_LIMIT=60       # Requests per minute
+API_LOG_ENABLED=true    # Enable request/response logging</code></pre>
+      <h2 id="authentication">Authentication</h2>
+      <p>The API uses Laravel Sanctum for token-based authentication. Generate tokens from the admin panel (<code>/admin/api/tokens</code>) or programmatically:</p>
+      <pre><code>use App\Models\User;
+
+// Create a token
+\$user = User::find(1);
+\$token = \$user->createToken('api-token')->plainTextToken;
+
+// Use in requests
+// Authorization: Bearer {token}</code></pre>
+      <h2 id="route-manager">Route Manager</h2>
+      <p>The visual Route Manager (<code>/admin/api/routes</code>) lets you enable or disable individual API routes. Each route can be toggled per HTTP method (GET, POST, PUT, DELETE). Disabled routes return 404.</p>
+      <pre><code>// Route toggle keys are stored as settings:
+// api.route.GET.api.dynamic.Profile  → "1" (enabled)
+// api.route.DELETE.api.dynamic.Profile → "0" (disabled)
+
+// The RouteManager middleware checks these toggles at runtime</code></pre>
+      <h2 id="api-endpoints">API Endpoints</h2>
+      <p>The API module provides the following endpoints:</p>
+      <table>
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td><code>/api/tokens</code></td><td>List your API tokens</td></tr>
+          <tr><td>POST</td><td><code>/api/tokens</code></td><td>Create a new token</td></tr>
+          <tr><td>DELETE</td><td><code>/api/tokens/{id}</code></td><td>Revoke a token</td></tr>
+          <tr><td>GET</td><td><code>/api/dynamic/{model}</code></td><td>List records of a dynamic model</td></tr>
+          <tr><td>POST</td><td><code>/api/dynamic/{model}</code></td><td>Create a record</td></tr>
+          <tr><td>GET</td><td><code>/api/dynamic/{model}/{id}</code></td><td>Get a record</td></tr>
+          <tr><td>PUT</td><td><code>/api/dynamic/{model}/{id}</code></td><td>Update a record</td></tr>
+          <tr><td>DELETE</td><td><code>/api/dynamic/{model}/{id}</code></td><td>Delete a record</td></tr>
+        </tbody>
+      </table>
+      <h2 id="api-logging">API Logging</h2>
+      <p>When enabled, all API requests are logged to the <code>api_log</code> table. The log viewer (<code>/admin/api/log</code>) shows method, URL, status code, IP address, duration, and request/response payload.</p>
+      <h2 id="rate-limiting">Rate Limiting</h2>
+      <p>Rate limiting is applied per IP address. Configure the limit via <code>API_RATE_LIMIT</code> in <code>.env</code>. When the limit is exceeded, the API returns a 429 Too Many Requests response.</p>
+    `
+  },
+  storage: {
+    title: 'Storage & Media',
+    content: `
+      <h1>Storage & Media</h1>
+      <p>The Storage module provides a media library, file uploads, and multiple disk drivers for storing files locally or in the cloud.</p>
+      <h2 id="media-library">Media Library</h2>
+      <p>The media manager is available at <code>/admin/storage</code>. It supports:</p>
+      <ul>
+        <li>Upload files by drag & drop or file picker</li>
+        <li>Grid and list view modes</li>
+        <li>Search by file name</li>
+        <li>Edit alt text and captions</li>
+        <li>Delete files</li>
+        <li>Image preview with dimensions</li>
+      </ul>
+      <h2 id="disk-drivers">Disk Drivers</h2>
+      <p>Configure the storage disk in <code>.env</code>:</p>
+      <pre><code>STORAGE_DISK=local    # Options: local, s3, r2</code></pre>
+      <h3>Local Disk</h3>
+      <p>Files are stored in <code>core/storage/app/public/media/</code>. The <code>core/public/storage</code> junction points to <code>core/storage/app/public</code>, making files accessible via <code>/storage/media/{path}</code>. When using <code>php artisan serve</code>, files are served directly by the PHP development server.</p>
+      <h3>S3 Disk</h3>
+      <pre><code>STORAGE_AWS_ACCESS_KEY_ID=
+STORAGE_AWS_SECRET_ACCESS_KEY=
+STORAGE_AWS_DEFAULT_REGION=us-east-1
+STORAGE_AWS_BUCKET=
+STORAGE_AWS_ENDPOINT=</code></pre>
+      <h3>R2 Disk (Cloudflare)</h3>
+      <pre><code>STORAGE_R2_ACCESS_KEY_ID=
+STORAGE_R2_SECRET_ACCESS_KEY=
+STORAGE_R2_REGION=auto
+STORAGE_R2_BUCKET=
+STORAGE_R2_URL=
+STORAGE_R2_ENDPOINT=</code></pre>
+      <h2 id="file-upload-rules">Upload Rules</h2>
+      <p>Configure allowed mime types and maximum file size in <code>modules/inox/storage/config/storage.php</code>:</p>
+      <pre><code>'allowed_mimes' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'],
+'max_file_size' => 10 * 1024, // KB</code></pre>
+      <h2 id="media-model">Media Model</h2>
+      <p>The <code>Inox\\Storage\\Models\\Media</code> model represents uploaded files:</p>
+      <pre><code>\$media = Media::find(1);
+echo \$media->url();        // Full URL to the file
+echo \$media->isImage();    // Check if file is an image
+echo \$media->humanSize();  // Human-readable file size</code></pre>
+      <p>Relationships: <code>\$media->uploader</code> returns the User who uploaded the file.</p>
+    `
+  },
+  'schema-studio': {
+    title: 'Schema Studio',
+    content: `
+      <h1>Schema Studio</h1>
+      <p>Schema Studio is a visual schema builder that lets you design data models through an intuitive admin interface. It generates migrations, Eloquent models, policies, and RESTful CRUD APIs automatically.</p>
+      <h2 id="how-it-works">How It Works</h2>
+      <p>Schemas are stored as JSON files in the <code>schema/</code> directory at the project root. The Schema Designer UI (<code>/admin/schema-studio/designer/{name}</code>) lets you define fields, types, validation rules, and relationships visually. When you save a schema, the system generates all the necessary PHP files.</p>
+      <h2 id="field-types">Field Types</h2>
+      <p>Schema Studio supports a variety of field types:</p>
+      <table>
+        <thead><tr><th>Type</th><th>Database Column</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>string</td><td>VARCHAR</td><td>Single-line text</td></tr>
+          <tr><td>text</td><td>TEXT</td><td>Multi-line text</td></tr>
+          <tr><td>number</td><td>INTEGER</td><td>Numeric value</td></tr>
+          <tr><td>boolean</td><td>BOOLEAN</td><td>True/false toggle</td></tr>
+          <tr><td>email</td><td>VARCHAR</td><td>Email address with validation</td></tr>
+          <tr><td>url</td><td>VARCHAR</td><td>URL with validation</td></tr>
+          <tr><td>date</td><td>DATE</td><td>Date picker</td></tr>
+          <tr><td>datetime</td><td>DATETIME</td><td>Date and time</td></tr>
+          <tr><td>image</td><td>VARCHAR (path)</td><td>Image upload</td></tr>
+          <tr><td>relationship</td><td>FOREIGN KEY</td><td>BelongsTo relationship</td></tr>
+        </tbody>
+      </table>
+      <h2 id="generated-files">Generated Files</h2>
+      <p>When you save a schema, Schema Studio generates:</p>
+      <ul>
+        <li><strong>Migration</strong> — <code>database/migrations/xxxx_xx_xx_create_{table}_table.php</code></li>
+        <li><strong>Model</strong> — <code>app/Models/{ModelName}.php</code></li>
+        <li><strong>Policy</strong> — <code>app/Policies/{ModelName}Policy.php</code></li>
+        <li><strong>OpenAPI Spec</strong> — <code>schema/{model}_openapi.json</code></li>
+        <li><strong>TypeScript Types</strong> — <code>schema/{model}.ts</code></li>
+      </ul>
+      <h2 id="dynamic-crud">Dynamic CRUD API</h2>
+      <p>Once a schema is created, the dynamic model controller exposes full CRUD endpoints:</p>
+      <pre><code>GET    /api/dynamic/{model}     # List records (paginated)
+POST   /api/dynamic/{model}     # Create a record
+GET    /api/dynamic/{model}/{id} # Get a record
+PUT    /api/dynamic/{model}/{id} # Update a record
+DELETE /api/dynamic/{model}/{id} # Delete a record</code></pre>
+      <p>These routes can be toggled on/off individually from the API Route Manager in the admin panel.</p>
+      <h2 id="schema-example">Schema Example</h2>
+      <pre><code>{
+    "model": "Project",
+    "table": "projects",
+    "fields": [
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Project Title",
+            "validation": "required|max:255"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "label": "Description",
+            "validation": "nullable"
+        },
+        {
+            "name": "url",
+            "type": "url",
+            "label": "Project URL",
+            "validation": "nullable|url"
+        },
+        {
+            "name": "is_published",
+            "type": "boolean",
+            "label": "Published",
+            "validation": "boolean",
+            "default": false
+        }
+    ]
+}</code></pre>
+    `
+  },
+  permissions: {
+    title: 'Roles & Permissions',
+    content: `
+      <h1>Roles & Permissions</h1>
+      <p>InoxCMS includes a role-based access control (RBAC) system with fine-grained permission management.</p>
+      <h2 id="how-it-works">How It Works</h2>
+      <p>Permissions are registered by the system and by modules. Roles group permissions together, and users can be assigned one or more roles. A super-admin role bypasses all permission checks.</p>
+      <pre><code>// Check if a user has permission
+\$user->hasPermission('manage_posts');
+
+// Check if a user has a role
+\$user->hasRole('admin');</code></pre>
+      <h2 id="permission-model">Permission Model</h2>
+      <p>The <code>Permission</code> model stores individual permissions with:</p>
+      <ul>
+        <li><strong>name</strong> — Display name (e.g., "Manage Posts")</li>
+        <li><strong>slug</strong> — Permission identifier (e.g., "manage_posts")</li>
+        <li><strong>description</strong> — What this permission allows</li>
+        <li><strong>group</strong> — Grouping for the admin UI (e.g., "Content")</li>
+      </ul>
+      <h2 id="permission-middleware">Permission Middleware</h2>
+      <p>The <code>can</code> middleware alias checks route access:</p>
+      <pre><code>// In routes:
+Route::middleware('can:manage_posts')->group(function () {
+    // ...
+});</code></pre>
+      <p>The middleware checks if the authenticated user has at least one of the required permissions. If not authenticated, it redirects to login. If authenticated but lacking permissions, it returns a 403 response.</p>
+      <h2 id="dynamic-gates">Dynamic Gates</h2>
+      <p><code>AppServiceProvider</code> registers Laravel authorization gates dynamically from the <code>permissions</code> table. This means you can use Laravel's <code>@can</code> Blade directive and <code>Gate::allows()</code> with any permission slug:</p>
+      <pre><code>@@can('manage_posts')
+    &lt;a href="/admin/posts"&gt;Manage Posts&lt;/a&gt;
+@@endcan</code></pre>
+      <h2 id="admin-interface">Admin Interface</h2>
+      <p>Manage roles and permissions from the admin panel:</p>
+      <ul>
+        <li><strong>Roles</strong> (<code>/admin/roles</code>) — Create, edit, and delete roles. Assign permissions to each role.</li>
+        <li><strong>Users</strong> (<code>/admin/users</code>) — Assign roles to users.</li>
+      </ul>
+    `
+  },
+  hooks: {
+    title: 'Hook System',
+    content: `
+      <h1>Hook System</h1>
+      <p>The Hook System provides a WordPress-style filter and action API for extending CMS functionality without modifying core code.</p>
+      <h2 id="filters-vs-actions">Filters vs Actions</h2>
+      <ul>
+        <li><strong>Filters</strong> — Modify data and return it. Hooks that transform content, meta tags, or configuration.</li>
+        <li><strong>Actions</strong> — Perform side effects. Hooks that fire during events like saving content or rendering the admin sidebar.</li>
+      </ul>
+      <h2 id="registering-hooks">Registering Hooks</h2>
+      <p>Register filters and actions from any ServiceProvider:</p>
+      <pre><code>use App\\Core\\HookSystem\\Hook;
+
+// Register a filter (modifies data)
+Hook::filter('head.meta', function (\$tags) {
+    \$tags[] = '&lt;meta name="author" content="InoxCMS"&gt;';
+    return \$tags;
+}, 10);
+
+// Register an action (side effect)
+Hook::action('content.saved', function (\$post) {
+    // Notify subscribers, clear cache, etc.
+    Log::info('Content saved: ' . \$post->id);
+}, 10);
+
+// Filters and actions support priority (lower = runs first)</code></pre>
+      <h2 id="applying-hooks">Applying Hooks</h2>
+      <p>Apply filters and execute actions from anywhere in the application:</p>
+      <pre><code>// Apply filters to a value
+\$metaTags = Hook::apply('head.meta', [
+    '&lt;meta name="description" content="...">',
+]);
+
+// Execute an action
+Hook::execute('module.activated', \$moduleName);</code></pre>
+      <h2 id="removing-hooks">Removing Hooks</h2>
+      <pre><code>Hook::removeFilter('head.meta', \$callback, 10);
+Hook::removeAction('content.saved', \$callback, 10);</code></pre>
+      <h2 id="core-hooks">Core Hooks</h2>
+      <p>InoxCMS fires these hooks throughout the system:</p>
+      <table>
+        <thead><tr><th>Hook</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>head.meta</code></td><td>Filter</td><td>Modify HTML &lt;head&gt; meta tags</td></tr>
+          <tr><td><code>content.saving</code></td><td>Filter</td><td>Modify content before save</td></tr>
+          <tr><td><code>content.saved</code></td><td>Action</td><td>After content is saved</td></tr>
+          <tr><td><code>content.deleted</code></td><td>Action</td><td>After content is deleted</td></tr>
+          <tr><td><code>admin.sidebar</code></td><td>Filter</td><td>Modify admin sidebar menu items</td></tr>
+          <tr><td><code>module.activated</code></td><td>Action</td><td>When a module is activated</td></tr>
+          <tr><td><code>module.deactivated</code></td><td>Action</td><td>When a module is deactivated</td></tr>
+        </tbody>
+      </table>
+    `
+  },
+  cli: {
+    title: 'CLI Commands',
+    content: `
+      <h1>CLI Commands</h1>
+      <p>InoxCMS extends Laravel's Artisan CLI with custom commands for CMS-specific operations.</p>
+      <h2 id="available-commands">Available Commands</h2>
+      <h3><code>inox:install</code></h3>
+      <p>Interactive installation wizard that guides you through project setup:</p>
+      <pre><code>php artisan inox:install
+php artisan inox:install --quick   # Skip prompts, use defaults</code></pre>
+      <h3><code>inox:make-theme</code></h3>
+      <p>Scaffolds a new theme with all required files:</p>
+      <pre><code>php artisan inox:make-theme mytheme
+php artisan inox:make-theme mytheme --vendor=mycompany
+php artisan inox:make-theme mytheme --description="My awesome theme"</code></pre>
+      <p>Generates: <code>theme.json</code>, layouts, page templates, blog templates, asset directories, and a screenshot placeholder.</p>
+      <h3><code>inox:serve</code></h3>
+      <p>Starts the PHP development server on a configurable port:</p>
+      <pre><code>php artisan inox:serve --port=8080</code></pre>
+      <h3><code>inox:check-updates</code></h3>
+      <p>Checks for module and theme updates from the marketplace:</p>
+      <pre><code>php artisan inox:check-updates
+php artisan inox:check-updates --type=modules
+php artisan inox:check-updates --type=themes</code></pre>
+      <h2 id="laravel-commands">Laravel Commands</h2>
+      <p>All standard Laravel Artisan commands are available:</p>
+      <pre><code>php artisan cache:clear
+php artisan route:list
+php artisan make:migration
+php artisan db:seed</code></pre>
+    `
+  },
+  architecture: {
+    title: 'Architecture',
+    content: `
+      <h1>Architecture Overview</h1>
+      <p>Understanding InoxCMS's architecture helps you extend and customize the system effectively.</p>
+      <h2 id="core-abstraction">Core Abstraction</h2>
+      <p>InoxCMS hides Laravel's framework files inside <code>core/</code>. The project root contains only CMS-specific files:</p>
+      <ul>
+        <li><code>index.php</code> and <code>artisan</code> bootstrap Laravel from <code>core/</code></li>
+        <li><code>.env</code> is loaded from the project root via <code>$app->useEnvironmentPath()</code></li>
+        <li><code>cms_path()</code> helper returns the absolute path to the root for referencing modules, themes, and config</li>
+        <li>Composer autoloading goes through <code>core/vendor/</code></li>
+      </ul>
+      <h2 id="service-providers">Service Providers</h2>
+      <p>InoxCMS uses four core service providers, each with a specific responsibility:</p>
+      <h3>InoxServiceProvider</h3>
+      <ul>
+        <li>Registers <code>ModuleEngine</code> and <code>ThemeEngine</code> as singletons</li>
+        <li>Loads the <code>helpers.php</code> file (provides <code>theme()</code>, <code>setting()</code>, <code>cms_path()</code>)</li>
+        <li>Registers InoxCMS Artisan commands</li>
+        <li>Discovers and activates modules on boot</li>
+        <li>Registers core nav items and boots the active theme</li>
+      </ul>
+      <h3>AppServiceProvider</h3>
+      <ul>
+        <li>Registers authorization gates dynamically from the permissions table</li>
+        <li>Registers Livewire components for posts, pages, categories, and tags</li>
+        <li>Registers content-related nav items</li>
+      </ul>
+      <h3>SettingServiceProvider</h3>
+      <ul>
+        <li>Registers <code>SettingRegistry</code> as a singleton</li>
+        <li>Registers core setting schemas (site info, content, cache, features)</li>
+        <li>Autoloads settings into the Laravel config cache</li>
+      </ul>
+      <h2 id="data-flow">Request Lifecycle</h2>
+      <ol>
+        <li><code>index.php</code> loads Composer autoloader from <code>core/vendor/</code></li>
+        <li><code>core/bootstrap/app.php</code> creates the Laravel Application with <code>basePath: dirname(__DIR__)</code> (which resolves to <code>core/</code>)</li>
+        <li>Environment path is set to the project root (<code>dirname(__DIR__, 2)</code>)</li>
+        <li>Middleware stack processes the request: <code>RedirectIfNotInstalled</code> checks if setup is complete</li>
+        <li>Route matching dispatches to the appropriate controller or Livewire component</li>
+        <li>If no route matches, the catch-all <code>/{path}</code> route renders a page via <code>PageController</code></li>
+      </ol>
+      <h2 id="settings-system">Settings System</h2>
+      <p>All application settings are stored in the database (<code>inox_settings</code> table), not in <code>.env</code>. The <code>SettingRegistry</code> provides:</p>
+      <ul>
+        <li>Schema registration — modules and themes declare their settings structure</li>
+        <li>Autoloading — frequently accessed settings are cached in the Laravel config</li>
+        <li>Purge — when a module/theme is uninstalled, its settings are cleaned up</li>
+        <li>Helper functions — <code>setting()</code> for global values, <code>theme()</code> for theme-specific values</li>
+      </ul>
+      <h2 id="livewire-components">Livewire Components</h2>
+      <p>The admin panel is built entirely with Laravel Livewire 4 components, providing a reactive SPA-like experience without writing JavaScript:</p>
+      <ul>
+        <li>Post/Page forms with real-time validation</li>
+        <li>Category and tag management</li>
+        <li>Module and theme management with marketplace integration</li>
+        <li>Settings panels with save buttons</li>
+        <li>Media library with upload progress</li>
+      </ul>
+    `
+  }
+};
+
+const { createApp, ref, computed, watch, onMounted, nextTick, onUnmounted } = Vue;
+const { createRouter, createWebHashHistory } = VueRouter;
+
+const sidebarGroups = ref([
+  {
+    label: 'Getting Started',
+    collapsed: false,
+    pages: [
+      { path: '/',               label: 'Overview' },
+      { path: '/installation',    label: 'Installation' },
+      { path: '/configuration',   label: 'Configuration' },
+      { path: '/directory-structure', label: 'Directory Structure' },
+    ]
+  },
+  {
+    label: 'Core Features',
+    collapsed: false,
+    pages: [
+      { path: '/modules',          label: 'Module Engine' },
+      { path: '/themes',           label: 'Theme Engine' },
+      { path: '/permissions',      label: 'Roles & Permissions' },
+      { path: '/hooks',            label: 'Hook System' },
+      { path: '/cli',              label: 'CLI Commands' },
+      { path: '/architecture',     label: 'Architecture' },
+    ]
+  },
+  {
+    label: 'Modules',
+    collapsed: false,
+    pages: [
+      { path: '/api',              label: 'API Module' },
+      { path: '/storage',          label: 'Storage & Media' },
+      { path: '/schema-studio',    label: 'Schema Studio' },
+    ]
+  }
+]);
+
+function buildSearchIndex() {
+  const results = [];
+  for (const [key, page] of Object.entries(PAGES)) {
+    const text = page.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const sections = [];
+    const h2Regex = /<h2[^>]*id="([^"]*)"[^>]*>(.*?)<\/h2>/g;
+    let m;
+    while ((m = h2Regex.exec(page.content)) !== null) {
+      sections.push({ id: m[1], text: m[2].replace(/<[^>]*>/g, '') });
+    }
+    results.push({ key, title: page.title, text, sections, content: text });
+  }
+  return results;
+}
+
+function addCopyButtons() {
+  document.querySelectorAll('.docs-content pre').forEach(pre => {
+    if (pre.querySelector('.copy-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+}
+
+const routes = [
+  { path: '/', component: { template: '<div></div>' } },
+  ...Object.keys(PAGES).filter(k => k !== 'home').map(key => ({
+    path: '/' + key,
+    component: { template: '<div></div>' }
+  })),
+  { path: '/:pathMatch(.*)*', redirect: '/' }
+];
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
+});
+
+const app = createApp({
+  setup() {
+    const route = VueRouter.useRoute();
+    const router = VueRouter.useRouter();
+    const currentPath = computed(() => route.path === '/' ? 'home' : route.path.slice(1));
+    const currentPage = computed(() => PAGES[currentPath.value] || PAGES.home);
+    const currentContent = computed(() => currentPage.value.content);
+    const loading = ref(false);
+    const sidebarOpen = ref(false);
+    const isDark = ref(false);
+    const searchQuery = ref('');
+    const searchOpen = ref(false);
+    const searchIndex = ref(buildSearchIndex());
+
+    const searchResults = computed(() => {
+      const q = searchQuery.value.trim().toLowerCase();
+      if (!q) return [];
+      const fuse = new Fuse(searchIndex.value, {
+        keys: ['title', 'text', 'sections.text'],
+        threshold: 0.4,
+        includeScore: true
+      });
+      return fuse.search(q).slice(0, 10).map(r => ({
+        ref: r.item.key,
+        title: r.item.title,
+        section: highlightText(r.item.text.slice(0, 120), q)
+      }));
+    });
+
+    function goToSearch(r) {
+      searchOpen.value = false;
+      searchQuery.value = '';
+      router.push('/' + r.ref);
+    }
+
+    function highlightText(text, query) {
+      const idx = text.toLowerCase().indexOf(query);
+      if (idx < 0) return text.slice(0, 120) + '...';
+      const start = Math.max(0, idx - 30);
+      const end = Math.min(text.length, idx + query.length + 50);
+      const prefix = start > 0 ? '...' : '';
+      const suffix = end < text.length ? '...' : '';
+      return prefix + text.slice(start, end) + suffix;
+    }
+
+    const tocItems = computed(() => {
+      const items = [];
+      const content = currentContent.value;
+      const regex = /<(h2|h3)[^>]*id="([^"]*)"[^>]*>(.*?)<\/\1>/g;
+      let m;
+      while ((m = regex.exec(content)) !== null) {
+        items.push({
+          level: parseInt(m[1][1]),
+          id: m[2],
+          text: m[3].replace(/<[^>]*>/g, '')
+        });
+      }
+      return items;
+    });
+
+    const activeToc = ref('');
+
+    function scrollTo(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        activeToc.value = id;
+      }
+    }
+
+    function updateActiveToc() {
+      const items = tocItems.value;
+      if (!items.length) { activeToc.value = ''; return; }
+      for (let i = items.length - 1; i >= 0; i--) {
+        const el = document.getElementById(items[i].id);
+        if (el && el.getBoundingClientRect().top <= 120) {
+          activeToc.value = items[i].id;
+          return;
+        }
+      }
+      activeToc.value = items[0]?.id || '';
+    }
+
+    function toggleDarkMode() {
+      isDark.value = !isDark.value;
+      document.documentElement.classList.toggle('dark', isDark.value);
+      localStorage.setItem('inox-docs-dark', isDark.value ? 'true' : 'false');
+    }
+
+    onMounted(() => {
+      const saved = localStorage.getItem('inox-docs-dark');
+      if (saved === 'true' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        isDark.value = true;
+        document.documentElement.classList.add('dark');
+      }
+    });
+
+    watch(currentPath, () => {
+      nextTick(() => {
+        addCopyButtons();
+        updateActiveToc();
+      });
+    });
+
+    onMounted(() => {
+      nextTick(() => { addCopyButtons(); updateActiveToc(); });
+    });
+
+    let tocObserver = null;
+    onMounted(() => {
+      tocObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            activeToc.value = entry.target.id;
+          }
+        }
+      }, { rootMargin: '-120px 0px -70% 0px' });
+      const observer = tocObserver;
+      nextTick(() => {
+        document.querySelectorAll('.docs-content h2[id], .docs-content h3[id]').forEach(el => observer.observe(el));
+      });
+    });
+
+    watch(currentPath, () => {
+      nextTick(() => {
+        if (tocObserver) {
+          document.querySelectorAll('.docs-content h2[id], .docs-content h3[id]').forEach(el => tocObserver.observe(el));
+        }
+      });
+    });
+
+    onUnmounted(() => {
+      if (tocObserver) tocObserver.disconnect();
+    });
+
+    return {
+      currentContent, loading, sidebarOpen, isDark,
+      sidebarGroups, searchQuery, searchOpen, searchResults,
+      tocItems, activeToc, scrollTo, toggleDarkMode, goToSearch,
+      updateActiveToc
+    };
+  }
+});
+
+app.use(router);
+app.mount('#app');
+</script>
+</body>
+</html>
