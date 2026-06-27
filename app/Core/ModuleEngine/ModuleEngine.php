@@ -4,6 +4,7 @@ namespace App\Core\ModuleEngine;
 
 use App\Core\HookSystem\Hook;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 
 class ModuleEngine
 {
@@ -247,6 +248,72 @@ class ModuleEngine
             }
         }
         return $widgets;
+    }
+
+    // ─── Marketplace ──────────────────────────────────────────
+
+    public function getMarketplaceUrl(): string
+    {
+        return config('inox.marketplace.modules_url', 'https://raw.githubusercontent.com/maicolrme/inoxcms-modules/main/registry.json');
+    }
+
+    public function fetchRegistry(): ?array
+    {
+        try {
+            $url = $this->getMarketplaceUrl();
+            $response = Http::timeout(10)->get($url);
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data['packages'])) {
+                    return $data['packages'];
+                }
+                return $data;
+            }
+        } catch (\Exception $e) {
+            // Fallback to local cache
+        }
+
+        $regPath = base_path('modules/registry.json');
+        if (File::exists($regPath)) {
+            $local = json_decode(File::get($regPath), true) ?? [];
+            if (isset($local['packages'])) {
+                return $local['packages'];
+            }
+            return $local;
+        }
+
+        return null;
+    }
+
+    public function checkUpdates(?array $registry = null): array
+    {
+        $updates = [];
+        $registry = $registry ?? $this->fetchRegistry();
+
+        if (!$registry) {
+            return $updates;
+        }
+
+        foreach ($this->modules as $name => $module) {
+            $regEntry = $registry[$name] ?? null;
+            if (!$regEntry || !isset($regEntry['latest_version'])) {
+                continue;
+            }
+
+            $currentVersion = $module['version'] ?? '0.0.0';
+            $latestVersion = $regEntry['latest_version'];
+
+            if (version_compare($latestVersion, $currentVersion, '>')) {
+                $updates[$name] = [
+                    'name' => $name,
+                    'current_version' => $currentVersion,
+                    'latest_version' => $latestVersion,
+                    'download_url' => $regEntry['versions'][$latestVersion]['download_url'] ?? '',
+                ];
+            }
+        }
+
+        return $updates;
     }
 
     // ─── Internal ─────────────────────────────────────────────

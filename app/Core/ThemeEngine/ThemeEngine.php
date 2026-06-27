@@ -4,6 +4,7 @@ namespace App\Core\ThemeEngine;
 
 use App\Core\SettingRegistry\SettingRegistry;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\View as ViewInstance;
 
@@ -223,6 +224,128 @@ class ThemeEngine
                 $view->with('theme_js_url', $url);
             });
         }
+    }
+
+    // ─── Marketplace ──────────────────────────────────────────
+
+    public function getMarketplaceUrl(): string
+    {
+        return config('inox.marketplace.themes_url', 'https://raw.githubusercontent.com/maicolrme/inoxcms-themes/main/registry.json');
+    }
+
+    public function fetchRegistry(): ?array
+    {
+        try {
+            $url = $this->getMarketplaceUrl();
+            $response = Http::timeout(10)->get($url);
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data['packages'])) {
+                    return $data['packages'];
+                }
+                return $data;
+            }
+        } catch (\Exception $e) {
+            // Fallback
+        }
+
+        $regPath = base_path('themes/registry.json');
+        if (File::exists($regPath)) {
+            $local = json_decode(File::get($regPath), true) ?? [];
+            if (isset($local['packages'])) {
+                return $local['packages'];
+            }
+            return $local;
+        }
+
+        return null;
+    }
+
+    public function installFromUrl(string $url): array
+    {
+        $tempDir = storage_path('app/theme-temp/' . uniqid());
+        File::ensureDirectoryExists($tempDir);
+
+        $zipPath = $tempDir . '/theme.zip';
+
+        $zipContent = @file_get_contents($url);
+        if ($zipContent === false) {
+            throw new \RuntimeException('Failed to download theme from URL.');
+        }
+        File::put($zipPath, $zipContent);
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath) !== true) {
+            throw new \RuntimeException('Invalid ZIP file.');
+        }
+
+        $manifestContent = null;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if (str_ends_with($name, 'theme.json')) {
+                $manifestContent = $zip->getFromIndex($i);
+                break;
+            }
+        }
+
+        if (!$manifestContent) {
+            $zip->close();
+            throw new \RuntimeException('No theme.json found in the package.');
+        }
+
+        $manifest = json_decode($manifestContent, true);
+        if (!$manifest || !isset($manifest['name']) || !isset($manifest['vendor'])) {
+            $zip->close();
+            throw new \RuntimeException('Invalid theme.json: name and vendor are required.');
+        }
+
+        $themeName = $manifest['name'];
+        $vendor = $manifest['vendor'];
+        $targetDir = base_path("themes/$vendor/$themeName");
+
+        if (File::isDirectory($targetDir)) {
+            $zip->close();
+            throw new \RuntimeException("Theme '$themeName' already exists in themes/$vendor/$themeName.");
+        }
+
+        File::ensureDirectoryExists(dirname($targetDir));
+        $zip->extractTo($targetDir);
+        $zip->close();
+
+        File::deleteDirectory(dirname($tempDir));
+
+        return $manifest;
+    }
+
+    public function checkUpdates(?array $registry = null): array
+    {
+        $updates = [];
+        $registry = $registry ?? $this->fetchRegistry();
+
+        if (!$registry) {
+            return $updates;
+        }
+
+        foreach ($this->themes as $key => $theme) {
+            $regEntry = $registry[$key] ?? null;
+            if (!$regEntry || !isset($regEntry['latest_version'])) {
+                continue;
+            }
+
+            $currentVersion = $theme['version'] ?? '0.0.0';
+            $latestVersion = $regEntry['latest_version'];
+
+            if (version_compare($latestVersion, $currentVersion, '>')) {
+                $updates[$key] = [
+                    'name' => $key,
+                    'current_version' => $currentVersion,
+                    'latest_version' => $latestVersion,
+                    'download_url' => $regEntry['versions'][$latestVersion]['download_url'] ?? '',
+                ];
+            }
+        }
+
+        return $updates;
     }
 
     public function getSettings(): array

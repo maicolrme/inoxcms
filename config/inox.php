@@ -43,6 +43,11 @@ return [
         'active' => 'inox/simple',
     ],
 
+    'marketplace' => [
+        'modules_url' => env('INOX_MARKETPLACE_MODULES', 'https://raw.githubusercontent.com/maicolrme/inoxcms-modules/main/registry.json'),
+        'themes_url' => env('INOX_MARKETPLACE_THEMES', 'https://raw.githubusercontent.com/maicolrme/inoxcms-themes/main/registry.json'),
+    ],
+
     'features' => [
         'realtime' => env('INOX_FEATURE_REALTIME', false),
         'ai' => env('INOX_FEATURE_AI', false),

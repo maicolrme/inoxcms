@@ -1,7 +1,0 @@
-{
-    "name": "storage",
-    "vendor": "inox",
-    "description": "File storage — local, S3 and R2 disks with upload, image editing and API.",
-    "version": "1.0.0",
-    "provider": "Inox\\Storage\\Providers\\ModuleServiceProvider"
-}

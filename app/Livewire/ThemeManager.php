@@ -16,8 +16,12 @@ class ThemeManager extends Component
     public string $tab = 'installed';
     public string $search = '';
     public array $registry = [];
+    public array $registryRaw = [];
+    public array $updates = [];
     public array $installedThemes = [];
     public ?string $activeThemeKey = null;
+    public bool $installing = false;
+    public string $installStatus = '';
 
     protected ThemeEngine $engine;
 
@@ -30,6 +34,7 @@ class ThemeManager extends Component
     {
         $this->loadInstalled();
         $this->loadRegistry();
+        $this->checkForUpdates();
     }
 
     protected function loadInstalled(): void
@@ -41,10 +46,34 @@ class ThemeManager extends Component
 
     protected function loadRegistry(): void
     {
-        $registryPath = base_path('themes/registry.json');
-        if (File::exists($registryPath)) {
-            $this->registry = json_decode(File::get($registryPath), true) ?? [];
+        $packages = $this->engine->fetchRegistry();
+        $this->registryRaw = $packages ?? [];
+
+        $this->registry = [];
+        if ($packages) {
+            foreach ($packages as $key => $pkg) {
+                $latestVer = $pkg['latest_version'] ?? '0.1.0';
+                $latest = $pkg['versions'][$latestVer] ?? [];
+                $registryKey = ($pkg['vendor'] ?? 'inox') . '/' . ($pkg['name'] ?? $key);
+                $this->registry[$registryKey] = [
+                    'name' => $pkg['name'] ?? $key,
+                    'vendor' => $pkg['vendor'] ?? 'inox',
+                    'version' => $latestVer,
+                    'latest_version' => $latestVer,
+                    'description' => $pkg['description'] ?? '',
+                    'download_url' => $latest['download_url'] ?? '',
+                    'screenshot' => $pkg['screenshot'] ?? '',
+                    'downloads' => $pkg['downloads'] ?? 0,
+                    'rating' => $pkg['rating'] ?? 0,
+                    'requires' => $latest['requires'] ?? [],
+                ];
+            }
         }
+    }
+
+    public function checkForUpdates(): void
+    {
+        $this->updates = $this->engine->checkUpdates($this->registryRaw);
     }
 
     public function activate(string $vendor): void
@@ -74,6 +103,29 @@ class ThemeManager extends Component
         File::deleteDirectory($theme['path']);
         $this->loadInstalled();
         $this->dispatch('notify', message: "Theme '{$vendor}' deleted.");
+    }
+
+    public function installFromMarketplace(string $key): void
+    {
+        $entry = $this->registry[$key] ?? null;
+        if (!$entry || empty($entry['download_url'])) {
+            $this->dispatch('notify', message: 'No download URL available.');
+            return;
+        }
+
+        $this->installing = true;
+        $this->installStatus = 'Downloading theme...';
+
+        try {
+            $this->engine->installFromUrl($entry['download_url']);
+            $this->installing = false;
+            $this->engine->discover();
+            $this->loadInstalled();
+            $this->dispatch('notify', message: "Theme '{$entry['name']}' installed.");
+        } catch (\Exception $e) {
+            $this->installing = false;
+            $this->dispatch('notify', message: 'Installation failed: ' . $e->getMessage());
+        }
     }
 
     public function render(): View

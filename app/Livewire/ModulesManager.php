@@ -19,6 +19,10 @@ class ModulesManager extends Component
 
     public array $registry = [];
 
+    public array $registryRaw = [];
+
+    public array $updates = [];
+
     public ?array $selectedModule = null;
 
     public string $search = '';
@@ -46,6 +50,7 @@ class ModulesManager extends Component
         $engine->discover();
         $this->loadModules($engine);
         $this->loadRegistry();
+        $this->checkForUpdates();
     }
 
     protected function loadModules(ModuleEngine $engine): void
@@ -61,10 +66,35 @@ class ModulesManager extends Component
 
     protected function loadRegistry(): void
     {
-        $regPath = base_path('modules/registry.json');
-        if (File::exists($regPath)) {
-            $this->registry = json_decode(File::get($regPath), true) ?? [];
+        $engine = app(ModuleEngine::class);
+        $packages = $engine->fetchRegistry();
+        $this->registryRaw = $packages ?? [];
+
+        $this->registry = [];
+        if ($packages) {
+            foreach ($packages as $key => $pkg) {
+                $latestVer = $pkg['latest_version'] ?? '0.1.0';
+                $latest = $pkg['versions'][$latestVer] ?? [];
+                $this->registry[] = [
+                    'name' => $pkg['name'] ?? $key,
+                    'vendor' => $pkg['vendor'] ?? 'inox',
+                    'version' => $latestVer,
+                    'latest_version' => $latestVer,
+                    'description' => $pkg['description'] ?? '',
+                    'download_url' => $latest['download_url'] ?? '',
+                    'downloads' => $pkg['downloads'] ?? 0,
+                    'rating' => $pkg['rating'] ?? 0,
+                    'requirements' => $latest['requires'] ?? [],
+                    'versions' => $pkg['versions'] ?? [],
+                ];
+            }
         }
+    }
+
+    public function checkForUpdates(): void
+    {
+        $engine = app(ModuleEngine::class);
+        $this->updates = $engine->checkUpdates($this->registryRaw);
     }
 
     public function refresh(): void
@@ -72,6 +102,7 @@ class ModulesManager extends Component
         $engine = app(ModuleEngine::class);
         $engine->discover();
         $this->loadModules($engine);
+        $this->loadRegistry();
     }
 
     public function showDetails(string $name): void
@@ -138,9 +169,25 @@ class ModulesManager extends Component
         $this->installModule($this->upload, null);
     }
 
-    public function installFromRegistry(string $downloadUrl): void
+    public function installFromRegistry(string $moduleName): void
     {
-        $this->installModule(null, $downloadUrl);
+        $entry = collect($this->registry)->firstWhere('name', $moduleName);
+        $url = $entry['download_url'] ?? '';
+        if (!$url) {
+            session()->flash('error', "No download URL available for '$moduleName'.");
+            return;
+        }
+        $this->installModule(null, $url);
+    }
+
+    public function installUpdate(string $moduleName): void
+    {
+        $update = $this->updates[$moduleName] ?? null;
+        if (!$update || empty($update['download_url'])) {
+            session()->flash('error', "No update URL available for '$moduleName'.");
+            return;
+        }
+        $this->installModule(null, $update['download_url']);
     }
 
     protected function installModule($upload, ?string $url): void

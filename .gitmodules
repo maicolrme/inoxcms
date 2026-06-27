@@ -1,0 +1,6 @@
+[submodule "modules"]
+	path = modules
+	url = https://github.com/maicolrme/inoxcms-modules.git
+[submodule "themes"]
+	path = themes
+	url = https://github.com/maicolrme/inoxcms-themes.git

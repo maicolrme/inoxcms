@@ -55,6 +55,7 @@ class InoxServiceProvider extends ServiceProvider
                 \App\Console\Commands\InoxInstallCommand::class,
                 \App\Console\Commands\InoxMakeThemeCommand::class,
                 \App\Console\Commands\InoxServeCommand::class,
+                \App\Console\Commands\InoxCheckUpdatesCommand::class,
             ]);
         }
     }

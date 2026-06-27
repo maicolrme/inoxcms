@@ -6,6 +6,13 @@
         </div>
     </div>
 
+    @if ($installing)
+        <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-3">
+            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            {{ $installStatus ?: 'Installing theme...' }}
+        </div>
+    @endif
+
     <div class="flex gap-1 mb-6 border-b border-gray-200">
         <button wire:click="$set('tab', 'installed')" class="px-4 py-2.5 text-sm font-medium rounded-t-lg -mb-px border border-transparent {{ $tab === 'installed' ? 'text-blue-700 bg-white border-gray-200 border-b-white' : 'text-gray-500 hover:text-gray-700' }}">
             Installed ({{ count($installedThemes) }})
@@ -18,12 +25,16 @@
     @if ($tab === 'installed')
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse ($installedThemes as $key => $theme)
+                @php $update = $updates[$key] ?? null; @endphp
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden {{ $activeThemeKey === $key ? 'ring-2 ring-blue-500' : '' }}">
-                    <div class="h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <div class="h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative">
                         @if ($activeThemeKey === $key)
                             <span class="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">Active</span>
                         @else
                             <span class="text-gray-400 text-xs">{{ $theme['vendor'] }}/{{ $theme['name'] }}</span>
+                        @endif
+                        @if ($update)
+                            <span class="absolute top-2 right-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">Update: {{ $update['latest_version'] }}</span>
                         @endif
                     </div>
                     <div class="p-4">
@@ -38,6 +49,9 @@
                                 <button wire:click="delete('{{ $key }}')" wire:confirm="Delete this theme?" class="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">Delete</button>
                             @else
                                 <span class="text-xs text-blue-600 font-medium">Currently active</span>
+                            @endif
+                            @if ($update)
+                                <button wire:click="installFromMarketplace('{{ $key }}')" class="ml-auto px-3 py-1.5 text-xs font-medium bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">Update to {{ $update['latest_version'] }}</button>
                             @endif
                         </div>
                     </div>
@@ -57,7 +71,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse ($registryThemes as $key => $theme)
                 @php $isInstalled = isset($installedThemes[$key]); @endphp
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden {{ $isInstalled ? 'opacity-75' : '' }}">
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden {{ $isInstalled ? 'opacity-75 border-green-200' : '' }}">
                     <div class="h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                         <span class="text-gray-400 text-xs">{{ $theme['vendor'] }}/{{ $theme['name'] }}</span>
                     </div>
@@ -67,11 +81,19 @@
                         @if ($theme['description'] ?? false)
                             <p class="text-sm text-gray-600 mt-2">{{ $theme['description'] }}</p>
                         @endif
-                        <div class="mt-4 pt-3 border-t border-gray-100">
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex items-center gap-2">
                             @if ($isInstalled)
                                 <span class="text-xs text-green-600 font-medium">Installed</span>
+                            @elseif (!empty($theme['download_url']))
+                                <button wire:click="installFromMarketplace('{{ $key }}')" class="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Install</button>
                             @else
-                                <span class="text-xs text-gray-400">Available in marketplace</span>
+                                <span class="text-xs text-gray-400 italic">Coming soon</span>
+                            @endif
+                            @if ($theme['downloads'] > 0)
+                                <span class="text-xs text-gray-400 ml-auto">{{ $theme['downloads'] }} downloads</span>
+                            @endif
+                            @if ($theme['rating'] > 0)
+                                <span class="text-xs text-yellow-600">★ {{ $theme['rating'] }}</span>
                             @endif
                         </div>
                     </div>

@@ -56,6 +56,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse ($filtered as $name => $module)
+                @php $update = $updates[$name] ?? null; @endphp
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col {{ ($module['active'] ?? false) ? '' : 'opacity-75' }}">
                     <div class="flex items-start justify-between mb-3">
                         <div class="min-w-0 flex-1">
@@ -81,6 +82,11 @@
                                 class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100">
                             Details
                         </button>
+                        @if ($update)
+                            <button wire:click="installUpdate('{{ $name }}')" class="px-3 py-1.5 text-sm font-medium bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                                Update ({{ $update['latest_version'] }})
+                            </button>
+                        @endif
                         <button wire:click="deleteModule('{{ $name }}')" wire:confirm="Delete module '{{ $name }}'? This cannot be undone."
                                 class="px-3 py-1.5 text-sm text-red-600 hover:text-red-800 rounded-lg hover:bg-red-50 ml-auto">
                             Delete
@@ -125,9 +131,12 @@
             </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-4 flex items-center gap-3">
             <input type="text" wire:model.live.debounce="registrySearch" placeholder="Search marketplace..."
-                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                   class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+            <button wire:click="$refresh" class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                Refresh
+            </button>
         </div>
 
         @php $filteredRegistry = $this->filtered_registry; @endphp
@@ -158,7 +167,7 @@
                                 {{ isset($this->modules[$module['name']]) && ($this->modules[$module['name']]['active'] ?? false) ? 'Deactivate' : 'Activate' }}
                             </button>
                         @elseif ($module['download_url'])
-                            <button wire:click="installFromRegistry('{{ $module['download_url'] }}')"
+                            <button wire:click="installFromRegistry('{{ $module['name'] }}')"
                                     class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 Install
                             </button>
@@ -167,6 +176,12 @@
                         @endif
                         @if (!empty($module['requirements']['php']))
                             <span class="text-xs text-gray-400 ml-auto">PHP {{ $module['requirements']['php'] }}</span>
+                        @endif
+                        @if ($module['downloads'] > 0)
+                            <span class="text-xs text-gray-400 ml-auto">{{ $module['downloads'] }} downloads</span>
+                        @endif
+                        @if ($module['rating'] > 0)
+                            <span class="text-xs text-yellow-600 ml-auto">★ {{ $module['rating'] }}</span>
                         @endif
                     </div>
                 </div>
