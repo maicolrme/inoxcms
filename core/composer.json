@@ -28,12 +28,12 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Inox\\Seo\\": "modules/inox/seo/src",
-            "Inox\\Storage\\": "modules/inox/storage/src",
-            "Inox\\Api\\": "modules/inox/api/src",
-            "Inox\\Ai\\": "modules/inox/ai/src",
-            "Inox\\Ecommerce\\": "modules/inox/ecommerce/src",
-            "Inox\\SchemaStudio\\": "modules/inox/schema-studio/src",
+            "Inox\\Seo\\": "../modules/inox/seo/src",
+            "Inox\\Storage\\": "../modules/inox/storage/src",
+            "Inox\\Api\\": "../modules/inox/api/src",
+            "Inox\\Ai\\": "../modules/inox/ai/src",
+            "Inox\\Ecommerce\\": "../modules/inox/ecommerce/src",
+            "Inox\\SchemaStudio\\": "../modules/inox/schema-studio/src",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
@@ -47,31 +47,31 @@
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php core/artisan key:generate",
-            "@php core/artisan migrate --force"
+            "@php artisan key:generate",
+            "@php artisan migrate --force"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "@php core/artisan serve"
+            "@php artisan serve"
         ],
         "test": [
-            "@php core/artisan config:clear --ansi @no_additional_args",
-            "@php core/artisan test"
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan test"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php core/artisan package:discover --ansi --no-interaction"
+            "@php artisan package:discover --ansi --no-interaction"
         ],
         "post-update-cmd": [
-            "@php core/artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php core/artisan key:generate --ansi",
+            "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php core/artisan migrate --graceful --ansi"
+            "@php artisan migrate --graceful --ansi"
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"

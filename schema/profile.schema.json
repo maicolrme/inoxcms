@@ -31,8 +31,8 @@
     ],
     "relations": [],
     "routes": {
-        "api": false,
+        "api": true,
         "admin": true
     },
-    "generated_at": "2026-06-27T13:57:18+00:00"
+    "generated_at": "2026-06-27T21:45:22+00:00"
 }
