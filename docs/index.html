@@ -203,7 +203,7 @@ const PAGES = {
         <div class="font-semibold mb-3">Requirements</div>
         <ul>
           <li>PHP 8.3 or higher</li>
-          <li>Composer 2.x</li>
+          <li>Composer 2.x (optional — dependencies included in repo)</li>
           <li>SQLite (default) or MySQL 8.0+</li>
           <li>Node.js & npm (optional, for theme asset building)</li>
         </ul>
@@ -212,7 +212,6 @@ const PAGES = {
         <div class="font-semibold mb-3">Installation</div>
         <pre><code>git clone https://github.com/maicolrme/inoxcms.git
 cd inoxcms
-composer install --working-dir=core
 php artisan inox:install</code></pre>
       </div>
       <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 mb-6">
@@ -232,7 +231,7 @@ php artisan inox:serve --port=8080</code></pre>
       <p>InoxCMS requires the following software installed on your system:</p>
       <ul>
         <li><strong>PHP</strong> 8.3 or higher (with extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML)</li>
-        <li><strong>Composer</strong> 2.x</li>
+        <li><strong>Composer</strong> 2.x (optional — all dependencies are included in the repository)</li>
         <li><strong>Database</strong> — SQLite (default, no setup required) or MySQL 8.0+ / MariaDB 10.3+</li>
         <li><strong>Git</strong> — for cloning the repository and managing submodules</li>
       </ul>
@@ -240,11 +239,8 @@ php artisan inox:serve --port=8080</code></pre>
       <h3>1. Clone the Repository</h3>
       <pre><code>git clone https://github.com/maicolrme/inoxcms.git
 cd inoxcms</code></pre>
-      <h3>2. Install PHP Dependencies</h3>
-      <p>Since the core Laravel framework lives inside <code>core/</code>, run Composer from there:</p>
-      <pre><code>cd core
-composer install
-cd ..</code></pre>
+      <h3>2. Ready to Use</h3>
+      <p>All PHP dependencies are already committed to the repository, so no <code>composer install</code> is needed. If you want to update dependencies later, run <code>composer update --working-dir=core</code>.</p>
       <h3>3. Initialize Environment</h3>
       <pre><code>cp .env.example .env
 php artisan key:generate</code></pre>
