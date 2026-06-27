@@ -11,6 +11,7 @@ class Installer
 {
     protected array $steps = [
         'welcome' => 'Welcome',
+        'env' => 'Environment Setup',
         'type' => 'Project Type',
         'database' => 'Database Configuration',
         'features' => 'Optional Features',
@@ -38,6 +39,7 @@ class Installer
         $step = $data['step'] ?? $this->currentStep();
 
         return match ($step) {
+            'env' => $this->setupEnvironment($data),
             'type' => $this->configureType($data),
             'database' => $this->configureDatabase($data),
             'features' => $this->configureFeatures($data),
@@ -45,6 +47,28 @@ class Installer
             'complete' => $this->finalize(),
             default => false,
         };
+    }
+
+    protected function setupEnvironment(array $data): bool
+    {
+        $envPath = cms_path('.env');
+        $envExample = cms_path('.env.example');
+
+        if (! File::exists($envPath) && File::exists($envExample)) {
+            File::copy($envExample, $envPath);
+        }
+
+        if (! config('app.key')) {
+            Artisan::call('key:generate', ['--force' => true]);
+        }
+
+        if (! File::exists(cms_path('core/public/storage'))) {
+            Artisan::call('storage:link');
+        }
+
+        $this->setStep('type');
+
+        return true;
     }
 
     protected function configureType(array $data): bool

@@ -59,6 +59,7 @@ class InoxInstallCommand extends Command
 
     protected function runAllSteps(Installer $installer, array $data): void
     {
+        $installer->run(array_merge($data, ['step' => 'env']));
         $installer->run(array_merge($data, ['step' => 'type']));
         $installer->run(array_merge($data, ['step' => 'database']));
         $installer->run(array_merge($data, ['step' => 'features']));

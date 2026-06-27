@@ -212,14 +212,9 @@ const PAGES = {
         <div class="font-semibold mb-3">Installation</div>
         <pre><code>git clone https://github.com/maicolrme/inoxcms.git
 cd inoxcms
-php artisan inox:install</code></pre>
+php artisan inox:install
+php artisan serve</code></pre>
       </div>
-      <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-5 mb-6">
-        <div class="font-semibold mb-3">Development Server</div>
-        <pre><code>php artisan serve
-
-# Or use the custom serve command on a different port:
-php artisan inox:serve --port=8080</code></pre>
       </div>
     `
   },
@@ -239,13 +234,8 @@ php artisan inox:serve --port=8080</code></pre>
       <h3>1. Clone the Repository</h3>
       <pre><code>git clone https://github.com/maicolrme/inoxcms.git
 cd inoxcms</code></pre>
-      <h3>2. Ready to Use</h3>
-      <p>All PHP dependencies are already committed to the repository, so no <code>composer install</code> is needed. If you want to update dependencies later, run <code>composer update --working-dir=core</code>.</p>
-      <h3>3. Initialize Environment</h3>
-      <pre><code>cp .env.example .env
-php artisan key:generate</code></pre>
-      <h3>4. Run the Installer</h3>
-      <p>The interactive installer guides you through project type, database setup, features, and admin account creation:</p>
+      <h3>2. Run the Installer</h3>
+      <p>The installer automatically creates your <code>.env</code> file, generates the app key, creates the storage link, and guides you through everything:</p>
       <pre><code>php artisan inox:install</code></pre>
       <p>Or use the quick mode with defaults (SQLite, website type, no extra features):</p>
       <pre><code>php artisan inox:install --quick</code></pre>
@@ -258,11 +248,11 @@ php artisan key:generate</code></pre>
         <li>Create the admin user account</li>
         <li>Mark installation as complete</li>
       </ul>
-      <h3>5. Update Submodules</h3>
+      <h3>3. Update Submodules</h3>
       <p>The modules and themes directories are managed as git submodules:</p>
       <pre><code>git submodule init
 git submodule update</code></pre>
-      <h3>6. Start the Development Server</h3>
+      <h3>4. Start the Development Server</h3>
       <pre><code>php artisan serve</code></pre>
       <p>Visit <a href="http://127.0.0.1:8000/admin">http://127.0.0.1:8000/admin</a> to access the admin panel and log in with the credentials you created during installation.</p>
       <h2 id="manual-installation">Manual Installation</h2>
