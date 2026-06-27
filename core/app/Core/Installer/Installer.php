@@ -134,7 +134,7 @@ class Installer
 
     protected function writeEnv(string $key, string $value): void
     {
-        $envPath = base_path('.env');
+        $envPath = cms_path('.env');
 
         if (! File::exists($envPath)) {
             return;

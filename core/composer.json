@@ -27,20 +27,20 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "core/app/",
+            "App\\": "app/",
             "Inox\\Seo\\": "modules/inox/seo/src",
             "Inox\\Storage\\": "modules/inox/storage/src",
             "Inox\\Api\\": "modules/inox/api/src",
             "Inox\\Ai\\": "modules/inox/ai/src",
             "Inox\\Ecommerce\\": "modules/inox/ecommerce/src",
             "Inox\\SchemaStudio\\": "modules/inox/schema-studio/src",
-            "Database\\Factories\\": "core/database/factories/",
-            "Database\\Seeders\\": "core/database/seeders/"
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "core/tests/"
+            "Tests\\": "tests/"
         }
     },
     "scripts": {

@@ -25,7 +25,7 @@ class ThemeEngine
     public function discover(): array
     {
         $this->themes = [];
-        $path = config('inox.themes.path', base_path('themes'));
+        $path = config('inox.themes.path', dirname(__DIR__, 3) . '/themes');
 
         if (!File::isDirectory($path)) {
             return $this->themes;
@@ -249,7 +249,7 @@ class ThemeEngine
             // Fallback
         }
 
-        $regPath = base_path('themes/registry.json');
+        $regPath = config('inox.themes.path') . '/registry.json';
         if (File::exists($regPath)) {
             $local = json_decode(File::get($regPath), true) ?? [];
             if (isset($local['packages'])) {
@@ -301,7 +301,7 @@ class ThemeEngine
 
         $themeName = $manifest['name'];
         $vendor = $manifest['vendor'];
-        $targetDir = base_path("themes/$vendor/$themeName");
+        $targetDir = config('inox.themes.path') . '/' . $vendor . '/' . $themeName;
 
         if (File::isDirectory($targetDir)) {
             $zip->close();
@@ -363,3 +363,8 @@ class ThemeEngine
         return $active;
     }
 }
+
+
+
+
+

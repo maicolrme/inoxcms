@@ -1,5 +1,7 @@
 <?php
 
+$cmsRoot = dirname(__DIR__, 2);
+
 return [
     'name' => env('INOX_NAME', 'INOX'),
     'version' => '0.1.0',
@@ -34,12 +36,12 @@ return [
     ],
 
     'modules' => [
-        'path' => base_path('modules'),
+        'path' => $cmsRoot . '/modules',
         'active' => ['storage', 'api', 'schema-studio'],
     ],
 
     'themes' => [
-        'path' => base_path('themes'),
+        'path' => $cmsRoot . '/themes',
         'active' => 'inox/simple',
     ],
 

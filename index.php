@@ -1,7 +1,6 @@
-#!/usr/bin/env php
 <?php
 
-use Symfony\Component\Console\Input\ArgvInput;
+use Illuminate\Http\Request;
 
 define('INOX_START', microtime(true));
 
@@ -9,6 +8,4 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = require_once __DIR__ . '/core/bootstrap/app.php';
 
-$status = $app->handleCommand(new ArgvInput);
-
-exit($status);
+$app->handleRequest(Request::capture());

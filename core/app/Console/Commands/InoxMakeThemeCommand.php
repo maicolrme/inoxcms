@@ -21,7 +21,7 @@ class InoxMakeThemeCommand extends Command
         $vendor = $this->option('vendor');
         $description = $this->option('description') ?: "{$vendor}/{$name} theme for INOX.";
 
-        $path = base_path("themes/{$vendor}/{$name}");
+        $path = config('inox.themes.path') . '/' . $vendor . '/' . $name;
 
         if (File::isDirectory($path)) {
             $this->error("Theme \"{$vendor}/{$name}\" already exists.");
@@ -52,7 +52,7 @@ class InoxMakeThemeCommand extends Command
     protected function writeFile(string $path, string $content): void
     {
         File::put($path, $content);
-        $this->line("  Created: " . str_replace(base_path(), '', $path));
+        $this->line("  Created: " . str_replace(cms_path(), '', $path));
     }
 
     protected function themeJson(string $vendor, string $name, string $description): string

@@ -273,7 +273,7 @@ class ModuleEngine
             // Fallback to local cache
         }
 
-        $regPath = base_path('modules/registry.json');
+        $regPath = config('inox.modules.path') . '/registry.json';
         if (File::exists($regPath)) {
             $local = json_decode(File::get($regPath), true) ?? [];
             if (isset($local['packages'])) {
@@ -327,3 +327,4 @@ class ModuleEngine
         }
     }
 }
+

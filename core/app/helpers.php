@@ -33,3 +33,14 @@ if (!function_exists('setting')) {
         return $registry->get($key, $default);
     }
 }
+
+if (!function_exists('cms_path')) {
+    function cms_path(string $path = ''): string
+    {
+        static $base = null;
+        if ($base === null) {
+            $base = app()->bound('cms.path') ? app('cms.path') : dirname(__DIR__, 3);
+        }
+        return $base . ($path ? '/' . ltrim($path, '/') : '');
+    }
+}

@@ -242,7 +242,7 @@ class ModulesManager extends Component
 
             $modName = $manifest['name'];
             $vendor = $manifest['vendor'];
-            $targetDir = base_path("modules/$vendor/$modName");
+            $targetDir = config('inox.modules.path') . '/' . $vendor . '/' . $modName;
 
             if (File::isDirectory($targetDir)) {
                 $zip->close();
@@ -285,7 +285,7 @@ class ModulesManager extends Component
 
     protected function registerAutoload(array $manifest, string $vendor, string $modName): void
     {
-        $composerPath = base_path('composer.json');
+        $composerPath = cms_path('composer.json');
         if (! File::exists($composerPath)) return;
 
         $namespace = ($manifest['namespace'] ?? 'Inox\\' . ucfirst($modName) . '\\');
@@ -301,9 +301,9 @@ class ModulesManager extends Component
 
     protected function runComposerDump(): void
     {
-        $composerPath = base_path('composer.json');
+        $composerPath = cms_path('composer.json');
         $start = microtime(true);
-        exec('php "' . base_path('composer.phar') . '" dump-autoload 2>&1', $output, $code);
+        exec('php "' . cms_path('composer.phar') . '" dump-autoload 2>&1', $output, $code);
         if ($code !== 0) {
             // Try global composer
             exec('composer dump-autoload 2>&1', $output, $code);
@@ -322,7 +322,7 @@ class ModulesManager extends Component
         }
 
         $vendor = $module['vendor'] ?? 'inox';
-        $modulePath = $module['path'] ?? base_path("modules/$vendor/$name");
+        $modulePath = $module['path'] ?? config('inox.modules.path') . '/' . $vendor . '/' . $name;
 
         if ($engine->isActive($name)) {
             $engine->deactivate($name);
@@ -343,7 +343,7 @@ class ModulesManager extends Component
 
     protected function removeAutoload(string $name): void
     {
-        $composerPath = base_path('composer.json');
+        $composerPath = cms_path('composer.json');
         if (! File::exists($composerPath)) return;
 
         $composer = json_decode(File::get($composerPath), true);
@@ -415,3 +415,5 @@ class ModulesManager extends Component
         return view('livewire.modules-manager');
     }
 }
+
+
